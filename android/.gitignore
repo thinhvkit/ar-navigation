@@ -1,0 +1,19 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# App build outputs
+/app/build
+
+# Compiled Filament materials (generated from .mat sources)
+/app/src/main/assets/materials/*.filamat
+
+# Mapbox token
+secret.properties
