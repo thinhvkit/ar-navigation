@@ -1,0 +1,411 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2EA9CEB12F40CE4000182000 /* TestRoute.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9CEB02F40CE4000182000 /* TestRoute.gpx */; };
+		A10000001 /* ARNavigationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000001 /* ARNavigationApp.swift */; };
+		A10000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000002 /* ContentView.swift */; };
+		A10000003 /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000003 /* NavigationViewModel.swift */; };
+		A10000004 /* NavigationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000004 /* NavigationState.swift */; };
+		A10000005 /* ARSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000005 /* ARSessionManager.swift */; };
+		A10000006 /* ArrowRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000006 /* ArrowRenderer.swift */; };
+		A10000007 /* ArrowMeshResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000007 /* ArrowMeshResource.swift */; };
+		A10000008 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000008 /* LocationManager.swift */; };
+		A10000009 /* KalmanFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000009 /* KalmanFilter.swift */; };
+		A1000000A /* RouteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000A /* RouteService.swift */; };
+		A1000000B /* RouteModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000B /* RouteModels.swift */; };
+		A1000000C /* SnapToRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000C /* SnapToRoute.swift */; };
+		A1000000D /* CoordinateConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000D /* CoordinateConverter.swift */; };
+		A1000000E /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000E /* ARViewContainer.swift */; };
+		A1000000F /* MiniMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000F /* MiniMapView.swift */; };
+		A10000010 /* DestinationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000011 /* DestinationPickerView.swift */; };
+		A10000011 /* PathRibbonRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012 /* PathRibbonRenderer.swift */; };
+		A10000012 /* ChevronRunnerRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000013 /* ChevronRunnerRenderer.swift */; };
+		A10000013 /* RibbonFlowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = A20000014 /* RibbonFlowShader.metal */; };
+		A10000014 /* TurnDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000015 /* TurnDetector.swift */; };
+		A10000015 /* TurnInstructionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000016 /* TurnInstructionCard.swift */; };
+		A10000016 /* RouteProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000017 /* RouteProgressBar.swift */; };
+		A10000017 /* OffRouteWarningBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000018 /* OffRouteWarningBanner.swift */; };
+		A10000018 /* RecalculatingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000019 /* RecalculatingOverlay.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2EA9CEB02F40CE4000182000 /* TestRoute.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = TestRoute.gpx; sourceTree = "<group>"; };
+		A20000001 /* ARNavigationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNavigationApp.swift; sourceTree = "<group>"; };
+		A20000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000003 /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
+		A20000004 /* NavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationState.swift; sourceTree = "<group>"; };
+		A20000005 /* ARSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSessionManager.swift; sourceTree = "<group>"; };
+		A20000006 /* ArrowRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowRenderer.swift; sourceTree = "<group>"; };
+		A20000007 /* ArrowMeshResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowMeshResource.swift; sourceTree = "<group>"; };
+		A20000008 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		A20000009 /* KalmanFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalmanFilter.swift; sourceTree = "<group>"; };
+		A2000000A /* RouteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteService.swift; sourceTree = "<group>"; };
+		A2000000B /* RouteModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteModels.swift; sourceTree = "<group>"; };
+		A2000000C /* SnapToRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToRoute.swift; sourceTree = "<group>"; };
+		A2000000D /* CoordinateConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinateConverter.swift; sourceTree = "<group>"; };
+		A2000000E /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		A2000000F /* MiniMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniMapView.swift; sourceTree = "<group>"; };
+		A20000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000011 /* DestinationPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationPickerView.swift; sourceTree = "<group>"; };
+		A20000012 /* PathRibbonRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathRibbonRenderer.swift; sourceTree = "<group>"; };
+		A20000013 /* ChevronRunnerRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChevronRunnerRenderer.swift; sourceTree = "<group>"; };
+		A20000014 /* RibbonFlowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RibbonFlowShader.metal; sourceTree = "<group>"; };
+		A20000015 /* TurnDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnDetector.swift; sourceTree = "<group>"; };
+		A20000016 /* TurnInstructionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnInstructionCard.swift; sourceTree = "<group>"; };
+		A20000017 /* RouteProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteProgressBar.swift; sourceTree = "<group>"; };
+		A20000018 /* OffRouteWarningBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffRouteWarningBanner.swift; sourceTree = "<group>"; };
+		A20000019 /* RecalculatingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecalculatingOverlay.swift; sourceTree = "<group>"; };
+		A30000001 /* ARNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000002 /* ARNavigation */,
+				A50000009 /* Products */,
+				2EA9CEB02F40CE4000182000 /* TestRoute.gpx */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000002 /* ARNavigation */ = {
+			isa = PBXGroup;
+			children = (
+				A20000001 /* ARNavigationApp.swift */,
+				A20000002 /* ContentView.swift */,
+				A20000010 /* Info.plist */,
+				A50000003 /* Navigation */,
+				A50000004 /* AR */,
+				A50000005 /* Location */,
+				A50000006 /* Route */,
+				A50000007 /* Geo */,
+				A50000008 /* UI */,
+			);
+			path = ARNavigation;
+			sourceTree = "<group>";
+		};
+		A50000003 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				A20000003 /* NavigationViewModel.swift */,
+				A20000004 /* NavigationState.swift */,
+				A20000015 /* TurnDetector.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		A50000004 /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				A20000005 /* ARSessionManager.swift */,
+				A20000006 /* ArrowRenderer.swift */,
+				A20000007 /* ArrowMeshResource.swift */,
+				A20000012 /* PathRibbonRenderer.swift */,
+				A20000013 /* ChevronRunnerRenderer.swift */,
+				A5000000A /* Shaders */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
+		A5000000A /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				A20000014 /* RibbonFlowShader.metal */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		A50000005 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				A20000008 /* LocationManager.swift */,
+				A20000009 /* KalmanFilter.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		A50000006 /* Route */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000A /* RouteService.swift */,
+				A2000000B /* RouteModels.swift */,
+				A2000000C /* SnapToRoute.swift */,
+			);
+			path = Route;
+			sourceTree = "<group>";
+		};
+		A50000007 /* Geo */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000D /* CoordinateConverter.swift */,
+			);
+			path = Geo;
+			sourceTree = "<group>";
+		};
+		A50000008 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000E /* ARViewContainer.swift */,
+				A2000000F /* MiniMapView.swift */,
+				A20000011 /* DestinationPickerView.swift */,
+				A20000016 /* TurnInstructionCard.swift */,
+				A20000017 /* RouteProgressBar.swift */,
+				A20000018 /* OffRouteWarningBanner.swift */,
+				A20000019 /* RecalculatingOverlay.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		A50000009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000001 /* ARNavigation.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000001 /* ARNavigation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000003 /* Build configuration list for PBXNativeTarget "ARNavigation" */;
+			buildPhases = (
+				A70000001 /* Sources */,
+				A40000001 /* Frameworks */,
+				A90000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ARNavigation;
+			productName = ARNavigation;
+			productReference = A30000001 /* ARNavigation.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA0000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					A60000001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = A80000001 /* Build configuration list for PBXProject "ARNavigation" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A50000001;
+			productRefGroup = A50000009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000001 /* ARNavigation */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A90000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EA9CEB12F40CE4000182000 /* TestRoute.gpx in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000001 /* ARNavigationApp.swift in Sources */,
+				A10000002 /* ContentView.swift in Sources */,
+				A10000003 /* NavigationViewModel.swift in Sources */,
+				A10000004 /* NavigationState.swift in Sources */,
+				A10000005 /* ARSessionManager.swift in Sources */,
+				A10000006 /* ArrowRenderer.swift in Sources */,
+				A10000007 /* ArrowMeshResource.swift in Sources */,
+				A10000008 /* LocationManager.swift in Sources */,
+				A10000009 /* KalmanFilter.swift in Sources */,
+				A1000000A /* RouteService.swift in Sources */,
+				A1000000B /* RouteModels.swift in Sources */,
+				A1000000C /* SnapToRoute.swift in Sources */,
+				A1000000D /* CoordinateConverter.swift in Sources */,
+				A1000000E /* ARViewContainer.swift in Sources */,
+				A1000000F /* MiniMapView.swift in Sources */,
+				A10000010 /* DestinationPickerView.swift in Sources */,
+				A10000011 /* PathRibbonRenderer.swift in Sources */,
+				A10000012 /* ChevronRunnerRenderer.swift in Sources */,
+				A10000013 /* RibbonFlowShader.metal in Sources */,
+				A10000014 /* TurnDetector.swift in Sources */,
+				A10000015 /* TurnInstructionCard.swift in Sources */,
+				A10000016 /* RouteProgressBar.swift in Sources */,
+				A10000017 /* OffRouteWarningBanner.swift in Sources */,
+				A10000018 /* RecalculatingOverlay.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AB0000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AB0000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AB0000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3J3JQQSL5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ARNavigation/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideals.arnav;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AB0000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3J3JQQSL5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ARNavigation/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideals.arnav;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000001 /* Build configuration list for PBXProject "ARNavigation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB0000001 /* Debug */,
+				AB0000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000003 /* Build configuration list for PBXNativeTarget "ARNavigation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB0000003 /* Debug */,
+				AB0000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AA0000001 /* Project object */;
+}

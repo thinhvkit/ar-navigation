@@ -1,0 +1,74 @@
+material {
+    name : "TurnArrow",
+    shadingModel : unlit,
+    blending : transparent,
+    doubleSided : true,
+
+    variables : [
+        clipPosition
+    ],
+
+    parameters : [
+        { type : float4,    name : baseColor        },
+        { type : float,     name : time             },
+        { type : float,     name : rimStrength      },
+
+        // Depth occlusion
+        { type : sampler2d, name : depthTexture     },
+        { type : float2,    name : screenResolution },
+        { type : float,     name : occlusionAlpha   },
+        { type : float,     name : depthTolerance   }
+    ],
+}
+
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+        material.clipPosition = getClipFromWorldMatrix() * getPosition();
+    }
+}
+
+fragment {
+
+    float linearizeDepth(float ndcZ, float near, float far) {
+        return (2.0 * near * far) / (far + near - ndcZ * (far - near));
+    }
+
+    float sampleRealDepthMeters(float2 screenUV) {
+        float2 dUV = float2(screenUV.x, 1.0 - screenUV.y);
+        float rawMM = float(texture(materialParams_depthTexture, dUV).r);
+        return rawMM / 1000.0;
+    }
+
+    void material(inout MaterialInputs mat) {
+        prepareMaterial(mat);
+
+        float3 glowColor = materialParams.baseColor.rgb;
+
+        // Emissive pulse
+        float pulse = 0.7 + 0.3 * sin(materialParams.time * 3.5);
+
+        // Brightness boost from rimStrength
+        float brightness = 0.5 + 0.5 * materialParams.rimStrength / 2.7;
+
+        float3 color = glowColor * pulse * brightness;
+
+        // Depth occlusion
+        float4 clip     = variable_clipPosition;
+        float2 ndcXY    = clip.xy / clip.w;
+        float2 screenUV = ndcXY * 0.5 + 0.5;
+
+        float realDepth    = sampleRealDepthMeters(screenUV);
+        float virtualDepth = linearizeDepth(clip.z / clip.w, 0.1, 100.0);
+
+        float isVisible = step(virtualDepth, realDepth - materialParams.depthTolerance);
+
+        float baseAlpha = materialParams.baseColor.a;
+        float finalAlpha = mix(
+            baseAlpha * materialParams.occlusionAlpha,
+            baseAlpha,
+            isVisible
+        );
+
+        mat.baseColor = float4(color, finalAlpha);
+    }
+}

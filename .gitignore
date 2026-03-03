@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Android / Gradle
+android/.gradle/
+android/.kotlin/
+android/build/
+android/app/build/
+android/local.properties
+
+# Mapbox tokens (copy mapbox_access_token.xml.example → mapbox_access_token.xml and fill in your token)
+android/app/src/main/res/values/mapbox_access_token.xml
+
+# iOS / Xcode
+ios/**/*.xcuserdata/
+ios/**/*.xcworkspace/xcuserdata/
+ios/**/xcuserdata/
+ios/DerivedData/
+ios/**/*.xcscmblueprint
+ios/**/*.xccheckout
+
+# APK / IPA build outputs
+*.apk
+*.aab
+*.ipa
+
+# IDE
+.idea/
+*.iml

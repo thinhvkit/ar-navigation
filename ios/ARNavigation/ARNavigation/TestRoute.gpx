@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<gpx version="1.1" creator="ARNavigation Test">
+  <!-- Simulates walking along a street near Ho Chi Minh City center -->
+  <!-- Each wpt is ~5m apart, Xcode plays them at ~1s intervals -->
+  <wpt lat="10.77620" lon="106.70080"><time>2026-01-01T00:00:00Z</time></wpt>
+  <wpt lat="10.77624" lon="106.70085"><time>2026-01-01T00:00:02Z</time></wpt>
+  <wpt lat="10.77628" lon="106.70090"><time>2026-01-01T00:00:04Z</time></wpt>
+  <wpt lat="10.77632" lon="106.70095"><time>2026-01-01T00:00:06Z</time></wpt>
+  <wpt lat="10.77636" lon="106.70100"><time>2026-01-01T00:00:08Z</time></wpt>
+  <wpt lat="10.77640" lon="106.70105"><time>2026-01-01T00:00:10Z</time></wpt>
+  <wpt lat="10.77644" lon="106.70110"><time>2026-01-01T00:00:12Z</time></wpt>
+  <wpt lat="10.77648" lon="106.70115"><time>2026-01-01T00:00:14Z</time></wpt>
+  <wpt lat="10.77652" lon="106.70120"><time>2026-01-01T00:00:16Z</time></wpt>
+  <wpt lat="10.77656" lon="106.70125"><time>2026-01-01T00:00:18Z</time></wpt>
+  <wpt lat="10.77660" lon="106.70130"><time>2026-01-01T00:00:20Z</time></wpt>
+  <wpt lat="10.77664" lon="106.70135"><time>2026-01-01T00:00:22Z</time></wpt>
+  <wpt lat="10.77668" lon="106.70140"><time>2026-01-01T00:00:24Z</time></wpt>
+  <wpt lat="10.77672" lon="106.70145"><time>2026-01-01T00:00:26Z</time></wpt>
+  <wpt lat="10.77676" lon="106.70150"><time>2026-01-01T00:00:28Z</time></wpt>
+  <!-- Turn right -->
+  <wpt lat="10.77672" lon="106.70155"><time>2026-01-01T00:00:30Z</time></wpt>
+  <wpt lat="10.77668" lon="106.70160"><time>2026-01-01T00:00:32Z</time></wpt>
+  <wpt lat="10.77664" lon="106.70165"><time>2026-01-01T00:00:34Z</time></wpt>
+  <wpt lat="10.77660" lon="106.70170"><time>2026-01-01T00:00:36Z</time></wpt>
+  <wpt lat="10.77656" lon="106.70175"><time>2026-01-01T00:00:38Z</time></wpt>
+  <wpt lat="10.77652" lon="106.70180"><time>2026-01-01T00:00:40Z</time></wpt>
+  <wpt lat="10.77648" lon="106.70185"><time>2026-01-01T00:00:42Z</time></wpt>
+  <wpt lat="10.77644" lon="106.70190"><time>2026-01-01T00:00:44Z</time></wpt>
+  <wpt lat="10.77640" lon="106.70195"><time>2026-01-01T00:00:46Z</time></wpt>
+  <wpt lat="10.77636" lon="106.70200"><time>2026-01-01T00:00:48Z</time></wpt>
+</gpx>

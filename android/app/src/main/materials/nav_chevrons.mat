@@ -1,0 +1,21 @@
+material {
+    name : "NavChevrons",
+    shadingModel : unlit,
+    blending : transparent,
+    depthWrite : false,
+    doubleSided : true,
+    culling : none,
+
+    parameters : [
+        { type : float4, name : color         },
+        { type : float4, name : emissiveColor }
+    ],
+}
+
+fragment {
+    void material(inout MaterialInputs mat) {
+        prepareMaterial(mat);
+        mat.baseColor = materialParams.color;
+        mat.emissive  = materialParams.emissiveColor;
+    }
+}

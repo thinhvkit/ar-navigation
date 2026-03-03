@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>AR Navigation needs camera access for augmented reality navigation.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>AR Navigation needs your location to show navigation arrows along your route.</string>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>arkit</string>
+    </array>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+    <key>UILaunchScreen</key>
+    <dict/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+</dict>
+</plist>

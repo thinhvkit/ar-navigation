@@ -1,0 +1,37 @@
+material {
+    name : "CameraBackground",
+    shadingModel : unlit,
+    blending : opaque,
+    depthWrite : false,
+    depthCulling : false,
+    doubleSided : true,
+    requires : [ uv0 ],
+
+    parameters : [
+        { type : sampler2d, name : yTexture  },
+        { type : sampler2d, name : uvTexture }
+    ],
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+
+        float2 uv = getUV0();
+
+        // YUV → RGB conversion (BT.601)
+        float y = texture(materialParams_yTexture, uv).r;
+        float2 uvChroma = texture(materialParams_uvTexture, uv).rg;
+
+        y = 1.1643 * (y - 0.0625);
+        float u = uvChroma.r - 0.5;
+        float v = uvChroma.g - 0.5;
+
+        material.baseColor = float4(
+            clamp(y + 1.5958 * v, 0.0, 1.0),
+            clamp(y - 0.39173 * u - 0.81290 * v, 0.0, 1.0),
+            clamp(y + 2.017 * u, 0.0, 1.0),
+            1.0
+        );
+    }
+}

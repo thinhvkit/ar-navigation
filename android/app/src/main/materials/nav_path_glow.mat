@@ -1,0 +1,45 @@
+material {
+    name : "NavPathGlow",
+    shadingModel : unlit,
+    blending : add,       // additive = natural energy glow
+    doubleSided : true,
+    culling : none,
+    requires : [ uv0 ],
+
+    parameters : [
+        { type : float,  name : time        },
+        { type : float,  name : speed       },
+        { type : float,  name : pathLength  },  // total path length in meters
+        { type : float4, name : colorNear   },  // color close to user
+        { type : float4, name : colorFar    }   // color near destination
+    ],
+}
+
+fragment {
+    void material(inout MaterialInputs mat) {
+        prepareMaterial(mat);
+
+        float2 uv = getUV0();
+
+        // ── Multi-frequency flow ─────────────────────────────────────
+        float s = uv.y - materialParams.time * materialParams.speed;
+
+        float flow  = 0.60 * smoothstep(0.3, 0.7, fract(s * 2.0));
+              flow += 0.28 * smoothstep(0.1, 0.5, fract(s * 5.0 + 0.3));
+              flow += 0.12 * smoothstep(0.4, 0.6, fract(s * 11.0 + 0.7));
+
+        // ── Edge brightness (glowing center ridge) ───────────────────
+        float centerDist = abs(uv.x * 2.0 - 1.0);    // 0=center 1=edge
+        float edgeGlow   = pow(1.0 - centerDist, 1.8);
+
+        // ── Gradient along path ──────────────────────────────────────
+        float t    = clamp(uv.y / materialParams.pathLength, 0.0, 1.0);
+        float4 col = mix(materialParams.colorNear, materialParams.colorFar, t);
+
+        // ── Near-user fade ───────────────────────────────────────────
+        float nearFade = smoothstep(0.0, 0.6, uv.y);
+
+        float brightness = flow * edgeGlow * nearFade;
+        mat.baseColor = float4(col.rgb * brightness, brightness * col.a);
+    }
+}

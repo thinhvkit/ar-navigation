@@ -1,0 +1,96 @@
+material {
+    name : "NavPathOccluded",
+    shadingModel : unlit,
+    blending : transparent,
+    doubleSided : true,
+    culling : none,
+    requires : [ uv0 ],
+
+    variables : [
+        clipPosition
+    ],
+
+    parameters : [
+        // Animation
+        { type : float,     name : time             },
+        { type : float,     name : speed            },  // scroll speed (m/s)
+        { type : float,     name : dashFreq         },  // dashes per meter
+        { type : float,     name : edgeFade         },  // 0..0.5 edge softness
+        { type : float4,    name : color            },  // RGBA path color
+
+        // Depth occlusion
+        { type : sampler2d, name : depthTexture     },  // ARCore depth (mm)
+        { type : float2,    name : screenResolution },
+        { type : float,     name : occlusionAlpha   },  // opacity when behind wall
+        { type : float,     name : depthTolerance   }   // meters — avoids z-fighting
+    ],
+}
+
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+        // Pass clip-space position to fragment shader for depth comparison
+        material.clipPosition = getClipFromWorldMatrix() * getPosition();
+    }
+}
+
+fragment {
+
+    // ── Helpers ──────────────────────────────────────────────────────
+
+    float linearizeDepth(float ndcZ, float near, float far) {
+        return (2.0 * near * far) / (far + near - ndcZ * (far - near));
+    }
+
+    float sampleRealDepthMeters(float2 screenUV) {
+        // Flip Y: ARCore depth image has origin at top-left
+        float2 dUV = float2(screenUV.x, 1.0 - screenUV.y);
+        // R16UI texture — raw value is depth in millimeters
+        float rawMM = float(texture(materialParams_depthTexture, dUV).r);
+        return rawMM / 1000.0;  // mm → meters
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+
+    void material(inout MaterialInputs mat) {
+        prepareMaterial(mat);
+
+        // ── UV coords (u=width 0..1, v=distance meters) ──────────────
+        float2 uv = getUV0();
+
+        // ── Scrolling dash ───────────────────────────────────────────
+        float scrolled = uv.y - materialParams.time * materialParams.speed;
+        float dash     = step(0.4, fract(scrolled * materialParams.dashFreq));
+
+        // ── Edge fade ────────────────────────────────────────────────
+        float fe = materialParams.edgeFade;
+        float edge = smoothstep(0.0, fe, uv.x) * smoothstep(0.0, fe, 1.0 - uv.x);
+
+        // ── Pulse ────────────────────────────────────────────────────
+        float pulse = 0.8 + 0.2 * sin(materialParams.time * 2.5);
+
+        // ── Depth occlusion ──────────────────────────────────────────
+        // Use clip position passed from vertex shader
+        float4 clip     = variable_clipPosition;
+        float2 ndcXY    = clip.xy / clip.w;
+        float2 screenUV = ndcXY * 0.5 + 0.5;
+
+        float realDepth    = sampleRealDepthMeters(screenUV);
+        float virtualDepth = linearizeDepth(clip.z / clip.w, 0.1, 100.0);
+
+        // Fragment is VISIBLE when virtualDepth < realDepth (in front of wall)
+        float isVisible  = step(virtualDepth, realDepth - materialParams.depthTolerance);
+
+        // ── Compose alpha ────────────────────────────────────────────
+        float visAlpha   = dash * edge * pulse * materialParams.color.a;
+        float finalAlpha = mix(
+            visAlpha * materialParams.occlusionAlpha,  // occluded: ghost
+            visAlpha,                                   // visible:  full
+            isVisible
+        );
+
+        // ── Fade near user (first 0.5m) ──────────────────────────────
+        float nearFade = smoothstep(0.0, 0.5, uv.y);
+
+        mat.baseColor = float4(materialParams.color.rgb, finalAlpha * nearFade);
+    }
+}
