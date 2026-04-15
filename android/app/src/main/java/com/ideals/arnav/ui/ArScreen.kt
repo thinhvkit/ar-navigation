@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
@@ -49,8 +50,12 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.ideals.arnav.ar.filament.FilamentArSurfaceView
+import com.ideals.arnav.files.GpxKmlFile
+import com.ideals.arnav.files.GpxKmlParser
+import com.ideals.arnav.files.SelectedFileManager
 import com.ideals.arnav.navigation.NavigationState
 import com.ideals.arnav.navigation.NavigationViewModel
+import java.io.File
 
 
 // Apple-style colors
@@ -65,6 +70,9 @@ fun ArScreen(viewModel: NavigationViewModel) {
     val context = LocalContext.current
     var showDestinationPicker by remember { mutableStateOf(false) }
     var showFileList by remember { mutableStateOf(false) }
+    var selectedFile by remember { mutableStateOf<GpxKmlFile?>(null) }
+    var parsedRoute by remember { mutableStateOf<GpxKmlParser.ParsedRoute?>(null) }
+    var showPreview by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // ---- Filament AR SurfaceView ----
@@ -152,6 +160,41 @@ fun ArScreen(viewModel: NavigationViewModel) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OffRouteIndicator(isOffRoute = state.isOffRoute)
+
+                // Show selected file info during file-based navigation
+                if (selectedFile != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(AppleFrost)
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "📍 ${selectedFile!!.name}",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Button(
+                            onClick = {
+                                selectedFile = null
+                                parsedRoute = null
+                                viewModel.resetNavigation()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFFF3B30)
+                            ),
+                            modifier = Modifier.height(32.dp)
+                        ) {
+                            Text("Exit", fontSize = 11.sp)
+                        }
+                    }
+                }
             } else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -250,7 +293,7 @@ fun ArScreen(viewModel: NavigationViewModel) {
         }
 
         // Destination button (bottom-right)
-        val isWaiting = state.phase == NavigationState.Phase.WAITING_FOR_GPS
+        /* val isWaiting = state.phase == NavigationState.Phase.WAITING_FOR_GPS
         Button(
             onClick = { showDestinationPicker = true },
             enabled = !isWaiting,
@@ -274,7 +317,7 @@ fun ArScreen(viewModel: NavigationViewModel) {
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(start = 6.dp)
             )
-        }
+        } */
     }
 
     if (showDestinationPicker) {
@@ -285,6 +328,43 @@ fun ArScreen(viewModel: NavigationViewModel) {
     }
 
     if (showFileList) {
-        FileListScreen(onDismiss = { showFileList = false })
+        FileListScreen(
+            onDismiss = { showFileList = false },
+            onFileSelected = { file ->
+                selectedFile = file
+                // Parse the file to get route waypoints
+                try {
+                    val fileContent = File(file.storedPath).readText()
+                    parsedRoute = when (file.type) {
+                        GpxKmlFile.FileType.GPX -> GpxKmlParser.parseGpx(fileContent)
+                        GpxKmlFile.FileType.KML -> GpxKmlParser.parseKml(fileContent)
+                    }
+                    if (parsedRoute != null) {
+                        showPreview = true
+                    } else {
+                        Toast.makeText(context, "Failed to parse file", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Error reading file: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
+
+    if (showPreview && selectedFile != null && parsedRoute != null) {
+        FilePreviewScreen(
+            file = selectedFile!!,
+            parsedRoute = parsedRoute!!,
+            onStart = {
+                viewModel.setRouteFromFile(selectedFile!!, parsedRoute!!)
+                SelectedFileManager(context).saveSelectedFile(selectedFile!!.id)
+                showPreview = false
+            },
+            onClose = {
+                showPreview = false
+                selectedFile = null
+                parsedRoute = null
+            }
+        )
     }
 }

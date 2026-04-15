@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.ideals.arnav.ar.ArrowMeshFactory
 
 import com.ideals.arnav.ar.ArSessionManager
+import com.ideals.arnav.files.GpxKmlFile
+import com.ideals.arnav.files.GpxKmlParser
+import com.ideals.arnav.files.SelectedFileManager
 import com.ideals.arnav.geo.CoordinateConverter
 import com.ideals.arnav.location.LocationManager
 import com.ideals.arnav.location.LocationUpdate
@@ -24,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import java.io.File
 
 class NavigationViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,8 +37,9 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
     val locationManager = LocationManager(application)
     val arSessionManager = ArSessionManager()
 
-    private val routeRepository = RouteRepository()
-    val geocodingService = GeocodingService()
+    private val mapboxToken = getMapboxToken(application)
+    private val routeRepository = RouteRepository(mapboxToken)
+    val geocodingService = GeocodingService(mapboxToken)
 
     private var destLat = 0.0
     private var destLng = 0.0
@@ -53,6 +58,17 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
         private set
     private var walkIndex = 0
     private var autoWalkJob: Job? = null
+
+    private fun getMapboxToken(context: android.app.Application): String {
+        return try {
+            val resourceId = context.resources.getIdentifier(
+                "mapbox_access_token", "string", context.packageName
+            )
+            if (resourceId != 0) context.getString(resourceId) else ""
+        } catch (e: Exception) {
+            ""
+        }
+    }
 
     fun startNavigation() {
         viewModelScope.launch {
@@ -374,6 +390,124 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
             )
         }
         fetchRoute(userLat, userLng)
+    }
+
+    /**
+     * Load and navigate using a trail file (GPX/KML).
+     * Bypasses Mapbox API; routes directly to applyRoute().
+     */
+    fun setRouteFromFile(file: GpxKmlFile, parsedRoute: GpxKmlParser.ParsedRoute) {
+        if (parsedRoute.waypoints.isEmpty()) {
+            _state.update {
+                it.copy(
+                    phase = NavigationState.Phase.ERROR,
+                    statusMessage = "Route has no waypoints"
+                )
+            }
+            return
+        }
+
+        destLat = parsedRoute.waypoints.last().lat
+        destLng = parsedRoute.waypoints.last().lng
+
+        // Stop any existing auto-walk
+        autoWalkJob?.cancel()
+        autoWalkJob = null
+        walkIndex = 0
+
+        // Re-anchor origin to latest GPS position
+        val userLat = _state.value.userLat
+        val userLng = _state.value.userLng
+        if (userLat != 0.0) {
+            CoordinateConverter.setOrigin(userLat, userLng)
+            Log.d(TAG, "Origin re-anchored for file route: $userLat, $userLng")
+        }
+
+        // Create RouteInfo from parsed route
+        val routeInfo = RouteInfo(
+            waypoints = parsedRoute.waypoints,
+            distanceMeters = parsedRoute.distanceMeters.toDouble(),
+            durationSeconds = 0.0,  // Not available from file
+            steps = emptyList()     // Turn-by-turn not available from file
+        )
+
+        _state.update {
+            it.copy(
+                phase = NavigationState.Phase.FETCHING_ROUTE,
+                demoMode = false,
+                route = emptyList(),
+                routeWorldPositions = emptyList(),
+                statusMessage = "Loading trail: ${file.name}"
+            )
+        }
+
+        // Apply route directly (no API call)
+        applyRoute(routeInfo)
+    }
+
+    /**
+     * Reset navigation state: clear route and return to WAITING_FOR_GPS.
+     * Used when exiting trail-based navigation.
+     */
+    fun resetNavigation() {
+        autoWalkJob?.cancel()
+        autoWalkJob = null
+        walkIndex = 0
+        destLat = 0.0
+        destLng = 0.0
+
+        _state.update {
+            it.copy(
+                phase = NavigationState.Phase.WAITING_FOR_GPS,
+                route = emptyList(),
+                routeWorldPositions = emptyList(),
+                turnSteps = emptyList(),
+                distanceAlongRoute = 0f,
+                distanceRemaining = 0f,
+                distanceToNextTurn = 0f,
+                currentStepIndex = 0,
+                statusMessage = "Ready to navigate"
+            )
+        }
+    }
+
+    /**
+     * Load persisted file on app startup.
+     */
+    private fun loadPersistedFile() {
+        val selectedId = SelectedFileManager(getApplication()).getSelectedFileId()
+        if (selectedId == null) {
+            Log.d(TAG, "No persisted file selected")
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val file = com.ideals.arnav.files.FileRepository(getApplication())
+                    .loadFiles()
+                    .find { it.id == selectedId }
+
+                if (file == null) {
+                    Log.w(TAG, "Persisted file not found: $selectedId")
+                    return@launch
+                }
+
+                val content = File(file.storedPath).readText()
+                val parsed = when (file.type) {
+                    GpxKmlFile.FileType.GPX -> GpxKmlParser.parseGpx(content)
+                    GpxKmlFile.FileType.KML -> GpxKmlParser.parseKml(content)
+                }
+
+                if (parsed != null) {
+                    Log.d(TAG, "Loaded persisted file: ${file.name} with ${parsed.waypoints.size} waypoints")
+                    setRouteFromFile(file, parsed)
+                } else {
+                    Log.w(TAG, "Failed to parse persisted file: ${file.name}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading persisted file", e)
+            }
+        }
     }
 
     private fun fetchRoute(fromLat: Double, fromLng: Double) {

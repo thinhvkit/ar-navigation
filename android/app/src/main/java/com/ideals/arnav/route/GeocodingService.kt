@@ -15,7 +15,7 @@ data class SearchResult(
     val lng: Double
 )
 
-class GeocodingService {
+class GeocodingService(private val mapboxToken: String = "") {
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -32,7 +32,7 @@ class GeocodingService {
             val url = "https://api.mapbox.com/geocoding/v5/mapbox.places/$encoded.json" +
                 "?proximity=%.6f,%.6f".format(proximityLng, proximityLat) +
                 "&limit=5" +
-                "&access_token=${RouteRepository.MAPBOX_TOKEN}"
+                "&access_token=$mapboxToken"
 
             val request = Request.Builder().url(url).get().build()
             val response = client.newCall(request).execute()

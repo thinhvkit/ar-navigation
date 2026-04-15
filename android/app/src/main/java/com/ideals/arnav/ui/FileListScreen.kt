@@ -57,7 +57,10 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun FileListScreen(onDismiss: () -> Unit) {
+fun FileListScreen(
+    onDismiss: () -> Unit,
+    onFileSelected: (GpxKmlFile) -> Unit = {}
+) {
     val context = LocalContext.current
     val viewModel: FileListViewModel = viewModel()
     val files by viewModel.files.collectAsState()
@@ -165,6 +168,10 @@ fun FileListScreen(onDismiss: () -> Unit) {
                     items(files, key = { it.id }) { file ->
                         FileListItem(
                             file = file,
+                            onSelectClick = {
+                                onFileSelected(file)
+                                onDismiss()
+                            },
                             onDeleteClick = { fileToDelete = file }
                         )
                         HorizontalDivider(
@@ -210,6 +217,7 @@ fun FileListScreen(onDismiss: () -> Unit) {
 @Composable
 private fun FileListItem(
     file: GpxKmlFile,
+    onSelectClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     Row(
@@ -276,6 +284,18 @@ private fun FileListItem(
                     fontSize = 12.sp
                 )
             }
+        }
+
+        Button(
+            onClick = onSelectClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0A84FF)
+            ),
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .height(32.dp)
+        ) {
+            Text("Select", fontSize = 12.sp)
         }
 
         IconButton(onClick = onDeleteClick) {

@@ -7,10 +7,9 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-class RouteRepository {
+class RouteRepository(private val mapboxToken: String = "") {
 
     companion object {
-        const val MAPBOX_TOKEN = "YOUR_MAPBOX_PUBLIC_TOKEN"
         private const val BASE_URL =
             "https://api.mapbox.com/directions/v5/mapbox/walking"
     }
@@ -35,7 +34,7 @@ class RouteRepository {
             val coords = "%.6f,%.6f;%.6f,%.6f".format(
                 originLng, originLat, destLng, destLat
             )
-            val url = "$BASE_URL/$coords?geometries=geojson&overview=full&steps=true&access_token=$MAPBOX_TOKEN"
+            val url = "$BASE_URL/$coords?geometries=geojson&overview=full&steps=true&access_token=$mapboxToken"
 
             val request = Request.Builder().url(url).get().build()
             val response = client.newCall(request).execute()
