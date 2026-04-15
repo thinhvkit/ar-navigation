@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -63,6 +64,7 @@ fun ArScreen(viewModel: NavigationViewModel) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var showDestinationPicker by remember { mutableStateOf(false) }
+    var showFileList by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // ---- Filament AR SurfaceView ----
@@ -226,6 +228,27 @@ fun ArScreen(viewModel: NavigationViewModel) {
             )
         }
 
+        // Files button (above destination button, bottom-right)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 76.dp, end = 16.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(AppleFrost)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { showFileList = true })
+                }
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.FolderOpen,
+                contentDescription = "Route files",
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
         // Destination button (bottom-right)
         val isWaiting = state.phase == NavigationState.Phase.WAITING_FOR_GPS
         Button(
@@ -259,5 +282,9 @@ fun ArScreen(viewModel: NavigationViewModel) {
             viewModel = viewModel,
             onDismiss = { showDestinationPicker = false }
         )
+    }
+
+    if (showFileList) {
+        FileListScreen(onDismiss = { showFileList = false })
     }
 }

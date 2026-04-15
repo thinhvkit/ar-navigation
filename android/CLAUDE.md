@@ -20,6 +20,7 @@ No tests or lint tooling are currently configured.
 **AR navigation app** using ARCore + Filament + Mapbox. MVVM with Jetpack Compose UI.
 
 ### Core Flow
+
 GPS location → Mapbox route fetch → Route projected to local meters → ARCore camera tracking → Filament renders 3D chevrons + path overlay on camera feed
 
 ### Key Packages
@@ -33,9 +34,11 @@ GPS location → Mapbox route fetch → Route projected to local meters → ARCo
 - **`ui/`** — Compose screens: `ArScreen` (main AR view + overlays), `DestinationPickerScreen`, turn instructions, minimap, compass
 
 ### Coordinate System
+
 GPS (lat/lng) → local meters via `CoordinateConverter` (flat-earth, valid ~1km). ARCore convention: right-handed, Y-up, -Z forward. GPS→AR transform built per-frame in `FilamentArRenderer.updateChevrons()` using heading calibration offset.
 
 ### Filament Rendering Pipeline
+
 1. `FilamentArRenderer.doFrame()` called from Choreographer
 2. ARCore `session.update()` (requires current EGL context)
 3. Camera background rendered as YUV→RGB via `camera_background.mat`
@@ -44,6 +47,7 @@ GPS (lat/lng) → local meters via `CoordinateConverter` (flat-earth, valid ~1km
 6. Render order controlled by priority values (lower = drawn first)
 
 ### Materials (`.mat` → `.filamat`)
+
 - `camera_background` — YUV→RGB, unlit opaque
 - `turn_arrow` — Lit PBR, rim glow + emissive pulse. Params: `baseColor(float4)`, `time(float)`, `rimStrength(float)`
 - `nav_path_glow` — Additive blending, flowing animation, near/far color gradient
@@ -51,9 +55,11 @@ GPS (lat/lng) → local meters via `CoordinateConverter` (flat-earth, valid ~1km
 - `nav_chevrons` — Unlit emissive arrows (legacy, being replaced by turn_arrow)
 
 ### Vertex Format Convention
+
 Filament auto-generates tangent frames from FLOAT3 normals. Use `TANGENTS` attribute with `AttributeType.FLOAT3` (normals), not FLOAT4 quaternions. Reference: `PathMeshBuilder` in the STS reference repo.
 
 ### ARCore Heading Calibration
+
 `ArCoreHeading` extracts yaw from ARCore camera pose. `NavigationViewModel` bridges ARCore yaw to GPS heading via exponential smoothing (0.2 factor for first 10 updates, then 0.05). The calibration angle offsets all GPS→AR transforms.
 
 ## Key Dependencies
@@ -69,3 +75,13 @@ Filament auto-generates tangent frames from FLOAT3 normals. Use `TANGENTS` attri
 - `NavigationState` is immutable; all mutations go through `NavigationViewModel._state.update {}`
 - ProGuard keeps ARCore, Filament, and route model classes (see `proguard-rules.pro`)
 - Demo mode (`NavigationViewModel.injectDemoRoute()`) provides a mock route for testing without GPS
+
+## File management KML/GPX
+
+Handles all file I/O:
+
+- Copies files from device URIs into app-private storage (filesDir/gpx_kml/)
+- Persists metadata as JSON
+- Validates extension (.gpx/.kml only), size (≤ 5 MB), and XML content (checks for <gpx or <kml  
+  header)
+- Returns clear error messages for each failure case
