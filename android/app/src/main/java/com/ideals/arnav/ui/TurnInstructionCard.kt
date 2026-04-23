@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ideals.arnav.route.TurnStep
 
-private val AppleBlue = Color(0xFF007AFF)
-private val AppleFrost = Color(0.12f, 0.12f, 0.14f, 0.72f)
-private val OffRouteOrange = Color(0xFFFF9500)
+// Shared with TrailSightArChrome.kt.
+private val BarkFrost = Color(0xB3_0F1412)
+private val FrostBorderSoft = Color(0x26_F4EDE0)
 
 @Composable
 fun TurnInstructionCard(
@@ -32,33 +32,30 @@ fun TurnInstructionCard(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(16.dp)
-    val borderModifier = if (isOffRoute) {
-        Modifier.border(2.dp, OffRouteOrange, shape)
-    } else {
-        Modifier
-    }
+    val outlineColor = if (isOffRoute) TrailSight.Danger else FrostBorderSoft
+    val outlineWidth = if (isOffRoute) 2.dp else 1.dp
+    val iconTileColor = if (isOffRoute) TrailSight.Danger else TrailSight.Moss
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(shape)
-            .then(borderModifier)
-            .background(AppleFrost)
+            .background(BarkFrost)
+            .border(outlineWidth, outlineColor, shape)
             .padding(12.dp)
     ) {
-        // Maneuver icon in blue rounded square
+        // Maneuver icon on a moss (or danger) tile.
         Icon(
             imageVector = ManeuverIcon.forManeuver(step.maneuverType, step.maneuverModifier),
             contentDescription = step.maneuverType,
-            tint = Color.White,
+            tint = TrailSight.Cream,
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(AppleBlue)
+                .background(iconTileColor)
                 .padding(8.dp)
         )
 
-        // Distance + instruction text
         Column(
             modifier = Modifier
                 .padding(start = 12.dp)
@@ -66,14 +63,17 @@ fun TurnInstructionCard(
         ) {
             Text(
                 text = formatDistance(distanceToNextTurn),
-                color = Color.White,
+                color = TrailSight.Cream,
+                fontFamily = TsType.mono,
                 fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = (-0.3).sp,
             )
             if (step.instruction.isNotBlank()) {
                 Text(
                     text = step.instruction,
-                    color = Color.White.copy(alpha = 0.8f),
+                    color = TrailSight.Cream.copy(alpha = 0.75f),
+                    fontFamily = TsType.sans,
                     fontSize = 13.sp,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

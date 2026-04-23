@@ -3,6 +3,7 @@ package com.ideals.arnav.ui
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,14 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val AppleBlue = Color(0xFF007AFF)
-private val AppleFrost = Color(0.12f, 0.12f, 0.14f, 0.72f)
-private val BarTrack = Color(1f, 1f, 1f, 0.2f)
+private val BarkFrost = Color(0xB3_0F1412)
+private val FrostBorderSoft = Color(0x26_F4EDE0)
+private val BarTrack = Color(0x33_F4EDE0) // cream at 20%
 
 @Composable
 fun RouteProgressBar(
@@ -46,10 +48,11 @@ fun RouteProgressBar(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(AppleFrost)
+            .background(BarkFrost)
+            .border(1.dp, FrostBorderSoft, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        // Progress bar
+        // Progress bar — moss→amber gradient evokes the glowing AR ribbon.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -62,11 +65,15 @@ fun RouteProgressBar(
                     .fillMaxWidth(animatedProgress)
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp))
-                    .background(AppleBlue)
+                    .background(
+                        Brush.horizontalGradient(
+                            0f to TrailSight.Moss,
+                            1f to TrailSight.Amber,
+                        )
+                    )
             )
         }
 
-        // Labels below bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -74,14 +81,16 @@ fun RouteProgressBar(
         ) {
             Text(
                 text = formatDistance(distanceRemaining) + " remaining",
-                color = Color.White.copy(alpha = 0.7f),
+                color = TrailSight.Cream.copy(alpha = 0.7f),
+                fontFamily = TsType.mono,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = formatEta(etaSeconds),
-                color = Color.White.copy(alpha = 0.7f),
+                color = TrailSight.Cream.copy(alpha = 0.7f),
+                fontFamily = TsType.mono,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )

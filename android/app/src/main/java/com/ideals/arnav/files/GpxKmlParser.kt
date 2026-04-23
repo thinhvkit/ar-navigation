@@ -15,7 +15,8 @@ object GpxKmlParser {
         val elevationGainMeters: Float = 0f,
         val elevationLossMeters: Float = 0f,
         val minElevationMeters: Float = 0f,
-        val maxElevationMeters: Float = 0f
+        val maxElevationMeters: Float = 0f,
+        val elevationsMeters: List<Float> = emptyList()
     )
 
     /**
@@ -89,7 +90,8 @@ object GpxKmlParser {
                 elevationGainMeters = elevStats.gain,
                 elevationLossMeters = elevStats.loss,
                 minElevationMeters = elevStats.min,
-                maxElevationMeters = elevStats.max
+                maxElevationMeters = elevStats.max,
+                elevationsMeters = elevations
             )
         } catch (e: Exception) {
             null
@@ -176,7 +178,8 @@ object GpxKmlParser {
                 elevationGainMeters = elevStats.gain,
                 elevationLossMeters = elevStats.loss,
                 minElevationMeters = elevStats.min,
-                maxElevationMeters = elevStats.max
+                maxElevationMeters = elevStats.max,
+                elevationsMeters = elevations
             )
         } catch (e: Exception) {
             null

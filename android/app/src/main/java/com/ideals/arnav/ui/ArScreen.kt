@@ -5,7 +5,9 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,8 +26,6 @@ import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -58,18 +59,25 @@ import com.ideals.arnav.navigation.NavigationViewModel
 import java.io.File
 
 
-// Apple-style colors
-private val AppleBlue = Color(0xFF007AFF)
-private val AppleFrost = Color(0.12f, 0.12f, 0.14f, 0.72f)
-private val AppleGreen = Color(0xFF34C759)
-private val AppleYellow = Color(0xFFFFCC00)
+// TrailSight AR chrome colours (bark-tinted frost).
+private val BarkFrost = Color(0xB3_0F1412)       // rgba(15,20,18,0.7)
+private val FrostBorder = Color(0x2E_F4EDE0)     // rgba(244,237,224,0.18)
+private val FrostBorderSoft = Color(0x26_F4EDE0) // rgba(244,237,224,0.15)
+private val StatusOkAmber = Color(0xFFE8B04A)
+private val StatusOkMoss = Color(0xFF6B8560)
 
 @Composable
-fun ArScreen(viewModel: NavigationViewModel) {
+fun ArScreen(
+    viewModel: NavigationViewModel,
+    openLibraryOnStart: Boolean = false,
+) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val lang by TrailSightSettings.get(context).language.collectAsState()
+    val s = strings(lang)
+    val isRtl = lang == TrailSightSettings.LANG_HE
     var showDestinationPicker by remember { mutableStateOf(false) }
-    var showFileList by remember { mutableStateOf(false) }
+    var showFileList by remember { mutableStateOf(openLibraryOnStart) }
     var selectedFile by remember { mutableStateOf<GpxKmlFile?>(null) }
     var parsedRoute by remember { mutableStateOf<GpxKmlParser.ParsedRoute?>(null) }
     var showPreview by remember { mutableStateOf(false) }
@@ -159,54 +167,22 @@ fun ArScreen(viewModel: NavigationViewModel) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OffRouteIndicator(isOffRoute = state.isOffRoute)
+                OffRouteIndicator(isOffRoute = state.isOffRoute, text = s.offRouteLabel)
 
-                // Show selected file info during file-based navigation
-                if (selectedFile != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(AppleFrost)
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "📍 ${selectedFile!!.name}",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Button(
-                            onClick = {
-                                selectedFile = null
-                                parsedRoute = null
-                                viewModel.resetNavigation()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFFF3B30)
-                            ),
-                            modifier = Modifier.height(32.dp)
-                        ) {
-                            Text("Exit", fontSize = 11.sp)
-                        }
-                    }
-                }
             } else {
+                // Idle / waiting — TrailSight status pill.
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(AppleFrost)
+                        .background(BarkFrost)
+                        .border(1.dp, FrostBorderSoft, RoundedCornerShape(20.dp))
                         .padding(horizontal = 16.dp, vertical = 10.dp)
                 ) {
                     Text(
                         text = state.statusMessage,
-                        color = Color.White,
+                        color = TrailSight.Cream,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -216,13 +192,14 @@ fun ArScreen(viewModel: NavigationViewModel) {
             if (state.gpsSignalLost) {
                 Text(
                     text = "GPS signal lost",
-                    color = AppleYellow,
+                    color = StatusOkAmber,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .padding(top = 6.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(AppleFrost)
+                        .background(BarkFrost)
+                        .border(1.dp, FrostBorderSoft, RoundedCornerShape(12.dp))
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 )
             }
@@ -230,27 +207,68 @@ fun ArScreen(viewModel: NavigationViewModel) {
             if (state.gpsAccuracy > 0 && !state.gpsSignalLost) {
                 Text(
                     text = "GPS ±%.0fm".format(state.gpsAccuracy),
-                    color = if (state.gpsAccuracy < 10) AppleGreen else AppleYellow,
+                    color = if (state.gpsAccuracy < 10) StatusOkMoss else StatusOkAmber,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .padding(top = 6.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(AppleFrost)
+                        .background(BarkFrost)
+                        .border(1.dp, FrostBorderSoft, RoundedCornerShape(12.dp))
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 )
             }
         }
 
-        // Screenshot button (top-right)
+        // ── Top-left: Exit pill (when a file-based trail is active) ──
+        if (selectedFile != null) {
+            TsArPillButton(
+                text = s.exit,
+                icon = Icons.Outlined.Close,
+                onClick = {
+                    val cleared = selectedFile
+                    selectedFile = null
+                    parsedRoute = null
+                    viewModel.resetNavigation()
+                    if (cleared != null) {
+                        SelectedFileManager(context).clearSelected()
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 42.dp, start = 14.dp)
+            )
+        }
+
+        // ── Top-right: heading pill (always visible) ──
+        TsHeadingPill(
+            headingDegrees = state.heading,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 42.dp, end = 72.dp)
+        )
+
+        // ── Trail name strip (centered, below top chrome) ──
+        selectedFile?.let { file ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 90.dp)
+            ) {
+                TsTrailNameStrip(name = "${file.name}.${file.type.name.lowercase()}")
+            }
+        }
+
+        // Screenshot button (top-right) — tap = screenshot, long-press = demo mode.
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 56.dp, end = 16.dp)
+                .padding(top = 38.dp, end = 16.dp)
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(AppleFrost)
+                .background(BarkFrost)
+                .border(1.dp, FrostBorder, CircleShape)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
@@ -266,29 +284,35 @@ fun ArScreen(viewModel: NavigationViewModel) {
             Icon(
                 imageVector = Icons.Outlined.CameraAlt,
                 contentDescription = "Screenshot",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                tint = TrailSight.Cream,
+                modifier = Modifier.size(18.dp)
             )
         }
 
-        // Files button (above destination button, bottom-right)
-        Box(
-            contentAlignment = Alignment.Center,
+        // Files button (bottom-right, above the old destination area).
+        TsArCircleButton(
+            icon = Icons.Outlined.FolderOpen,
+            contentDescription = "Route files",
+            onClick = { showFileList = true },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 76.dp, end = 16.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(AppleFrost)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { showFileList = true })
-                }
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.FolderOpen,
-                contentDescription = "Route files",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                .padding(bottom = 76.dp, end = 16.dp),
+        )
+
+        // Bottom HUD: three stat pills (when navigating).
+        val isNavigatingForHud = state.phase == NavigationState.Phase.NAVIGATING ||
+            state.phase == NavigationState.Phase.RECALCULATING
+        if (isNavigatingForHud) {
+            TsArBottomHud(
+                nextLabel = s.hudNext,
+                nextValue = formatDistanceMetersTs(state.distanceToNextTurn),
+                remainingLabel = s.hudRemaining,
+                remainingValue = formatDistanceMetersTs(state.distanceRemaining),
+                thirdLabel = s.hudEta,
+                thirdValue = formatEtaTs(state.etaSeconds),
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 14.dp, end = 14.dp, bottom = 150.dp),
             )
         }
 
